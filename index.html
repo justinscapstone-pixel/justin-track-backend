@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#193d35">
+    <meta name="description" content="StudentTrack: attendance and student wellbeing for Partida National High School, San Miguel, Bulacan.">
+    <link rel="icon" type="image/webp" href="assets/seal.webp">
+    <link rel="preload" as="image" href="assets/background.jpg">
+    <title>Partida StudentTrack | Teacher Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <a class="skip-link" href="#main-region">Skip to main content</a>
+
+    <!-- Portal selection screen -->
+    <main class="portal-choice-screen" id="portal-choice-screen">
+        <section class="portal-choice-card">
+            <a class="brand choice-brand" href="#" aria-label="StudentTrack home">
+                <img class="brand-mark brand-logo" src="assets/seal.webp" alt="">
+                <span><strong>StudentTrack</strong><small>PARTIDA NATIONAL HIGH SCHOOL</small></span>
+            </a>
+            <p class="eyebrow">WELCOME TO PARTIDA NHS</p>
+            <h1>Choose your portal</h1>
+            <p class="choice-description">Select how you want to access StudentTrack.</p>
+            <div class="portal-choice-grid">
+                <button class="portal-choice teacher-choice" id="choose-teacher" type="button">
+                    <span class="choice-icon teacher-choice-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span>
+                    <strong>Teacher portal</strong>
+                    <span>Manage classes, mark attendance, and record student behavior.</span>
+                    <span class="choice-action">Continue as teacher <b aria-hidden="true">→</b></span>
+                </button>
+                <button class="portal-choice parent-choice" id="choose-parent" type="button">
+                    <span class="choice-icon parent-choice-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
+                    <strong>Parent portal</strong>
+                    <span>Choose your children and view their attendance and school updates.</span>
+                    <span class="choice-action">Continue as parent <b aria-hidden="true">→</b></span>
+                </button>
+            </div>
+            <p class="choice-warning">Sign-in uses the school server. Student records and parent-child links stay in this browser and are not verified by the school.</p>
+        </section>
+    </main>
+
+    <!-- Authentication screen -->
+    <main class="auth-screen" id="auth-screen" hidden>
+        <aside class="auth-aside" aria-hidden="true">
+            <div class="seal-stage"><img src="assets/seal.webp" alt=""></div>
+            <h2>Partida National High School</h2>
+            <p class="aside-place">San Miguel, Bulacan</p>
+            <p class="aside-line aside-teacher">Take attendance, record behavior, and support every student from one place.</p>
+            <p class="aside-line aside-parent">See your child’s attendance and school updates as they happen.</p>
+        </aside>
+        <section class="auth-card" aria-labelledby="auth-title">
+            <a class="brand auth-brand" href="#" aria-label="StudentTrack">
+                <img class="brand-mark brand-logo" src="assets/seal.webp" alt="">
+                <span><strong>StudentTrack</strong><small>PARTIDA NATIONAL HIGH SCHOOL</small></span>
+            </a>
+            <button class="back-to-portals" id="back-to-portals" type="button">← Change portal</button>
+            <p class="eyebrow" id="auth-portal-label">TEACHER PORTAL</p>
+            <h1 id="auth-title">Welcome to StudentTrack</h1>
+            <p class="auth-copy" id="auth-copy">Sign in or register with a server-backed account to manage your local class data.</p>
+            <div class="auth-tabs" role="tablist" aria-label="Account access">
+                <button class="auth-tab active" id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="login-form">Log in</button>
+                <button class="auth-tab" id="register-tab" type="button" role="tab" aria-selected="false" aria-controls="register-form">Register</button>
+            </div>
+            <form id="login-form" class="auth-form">
+                <label class="field-label" for="login-email">Email</label>
+                <input id="login-email" type="email" autocomplete="username" placeholder="you@school.edu" required>
+                <label class="field-label" for="login-password">Password</label>
+                <div class="password-field">
+                    <input id="login-password" class="password-input" type="password" autocomplete="current-password" minlength="8" placeholder="At least 8 characters" required>
+                    <button class="password-toggle" type="button" data-password-toggle="login-password" aria-label="Show password" aria-pressed="false">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+                <button class="button button-primary auth-submit" type="submit">Log in</button>
+            </form>
+            <form id="register-form" class="auth-form" hidden>
+                <label class="field-label" for="register-name">Your name</label>
+                <input id="register-name" type="text" autocomplete="name" maxlength="80" placeholder="Teacher name" required>
+                <label class="field-label" for="register-email">Email</label>
+                <input id="register-email" type="email" autocomplete="email" placeholder="you@school.edu" required>
+                <label class="field-label teacher-role-field" for="register-role">Role</label>
+                <select id="register-role" class="teacher-role-field" required>
+                    <option value="teacher">Teacher</option>
+                </select>
+                <label class="field-label parent-children-field" for="parent-register-lrn" hidden>Child's LRN</label>
+                <input id="parent-register-lrn" class="parent-children-field" type="text" inputmode="numeric" autocomplete="off" minlength="12" maxlength="12" pattern="[0-9]{12}" placeholder="Enter the 12-digit LRN" required disabled hidden aria-describedby="parent-register-help">
+                <span class="parent-children-field field-help" id="parent-register-help" hidden>Enter the LRN provided by the school. You can link more children after registering.</span>
+                <label class="field-label" for="register-password">Create password</label>
+                <div class="password-field">
+                    <input id="register-password" class="password-input" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required>
+                    <button class="password-toggle" type="button" data-password-toggle="register-password" aria-label="Show password" aria-pressed="false">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+                <button class="button button-primary auth-submit" id="register-submit" type="submit">Create account</button>
+            </form>
+            <p class="auth-error" id="auth-error" role="alert" hidden></p>
+            <p class="prototype-warning">Account sign-in is handled by the school server. Student records and parent-child links remain in this browser and are not protected or synchronized by the server. Use fictional data only.</p>
+        </section>
+    </main>
+
+    <!-- Teacher portal shell -->
+    <div class="app-shell" id="portal" hidden>
+        <aside class="sidebar">
+            <a class="brand" href="#view-overview">
+                <img class="brand-mark brand-logo" src="assets/seal.webp" alt="">
+                <span><strong>StudentTrack</strong><small>PARTIDA NHS · TEACHER PORTAL</small></span>
+            </a>
+
+            <div class="school-card">
+                <span class="school-icon" aria-hidden="true">PN</span>
+                <span><strong>Partida National High</strong><small>School year 2026–2027</small></span>
+            </div>
+
+            <nav class="side-nav" aria-label="Main navigation">
+                <span class="nav-heading">DAILY</span>
+                <a class="nav-link selected" href="#view-overview"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span> Overview</a>
+                <a class="nav-link" href="#attendance"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span> Attendance <span class="nav-tag" id="nav-unmarked">0</span></a>
+                <a class="nav-link" href="#behavior"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></span> Behavior log</a>
+                <span class="nav-heading">RECORDS</span>
+                <a class="nav-link" href="#student-management"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Students</a>
+                <a class="nav-link" href="#activity"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span> Recent activity</a>
+                <span class="nav-heading">MANAGE</span>
+                <a class="nav-link" href="#class-settings"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 10 5-10 5L2 7l10-5Z"/><path d="m2 12 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg></span> Class setup</a>
+                <a class="nav-link" href="#app-settings"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></span> Settings</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="teacher-card">
+                    <span class="teacher-avatar">TC</span>
+                    <span><strong id="sidebar-user-name">Teacher Portal</strong><small id="sidebar-user-role">Partida NHS</small></span>
+                    <span class="online-dot" title="Portal ready"></span>
+                </div>
+                <button class="sign-out-button" id="sign-out" type="button">Sign out</button>
+                <p class="privacy-note">Student records are private. Only record information necessary to support students.</p>
+            </div>
+        </aside>
+
+        <main class="main-content" id="teacher-dashboard">
+            <header class="topbar">
+                <div class="breadcrumb"><span>Partida National High School</span><span aria-hidden="true">/</span><strong id="breadcrumb-current">Overview</strong></div>
+                <div class="topbar-right">
+                    <span class="local-status"><i aria-hidden="true"></i> Ready to record</span>
+                    <button class="find-button" id="open-find" type="button" aria-haspopup="dialog" aria-label="Find a student"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="find-label">Find student</span><kbd>Ctrl K</kbd></button>
+                    <button class="date-chip" id="today-label" type="button" aria-label="Today's date"></button>
+                    <span class="user-avatar" id="user-avatar" aria-label="Signed-in user">TC</span>
+                    <button class="top-sign-out" id="top-sign-out" type="button">Sign out</button>
+                </div>
+            </header>
+
+            <div class="page-content" id="main-region" tabindex="-1">
+                <!-- Teacher dashboard views -->
+                <section class="teacher-view" id="view-overview" data-view="overview">
+                <section class="welcome-row">
+                    <div>
+                        <p class="eyebrow" id="greeting">TEACHER DASHBOARD</p>
+                        <h1 id="welcome-title">Good morning, teacher <span aria-hidden="true">✦</span></h1>
+                        <p class="welcome-copy">Take attendance and keep up with your students’ wellbeing.</p>
+                    </div>
+                    <a class="button button-primary" href="#attendance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Take attendance</a>
+                </section>
+
+                <section class="stats-grid" aria-label="Today's school summary">
+                    <article class="stat-card">
+                        <div class="stat-top"><span class="stat-icon purple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="stat-note">SCHOOL-WIDE</span></div>
+                        <p class="stat-label">Students in school</p>
+                        <strong class="stat-value" id="stat-total">0</strong>
+                        <span class="stat-foot">Across all grades and sections</span>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-top"><span class="stat-icon green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></span><span class="stat-note live-note"><i></i> SCHOOL-WIDE</span></div>
+                        <p class="stat-label">Marked present</p>
+                        <strong class="stat-value" id="stat-present">0</strong>
+                        <span class="stat-foot" id="stat-present-foot">Attendance recorded for today</span>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-top"><span class="stat-icon orange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span class="stat-note">SCHOOL-WIDE</span></div>
+                        <p class="stat-label">Marked absent</p>
+                        <strong class="stat-value" id="stat-absent">0</strong>
+                        <span class="stat-foot">Attendance recorded for today</span>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-top"><span class="stat-icon late-stat-icon" aria-hidden="true">◷</span><span class="stat-note">SCHOOL-WIDE</span></div>
+                        <p class="stat-label">Marked late</p>
+                        <strong class="stat-value" id="stat-late">0</strong>
+                        <span class="stat-foot">Late arrivals recorded today</span>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-top"><span class="stat-icon excused-stat-icon" aria-hidden="true">✓</span><span class="stat-note">SCHOOL-WIDE</span></div>
+                        <p class="stat-label">Excused</p>
+                        <strong class="stat-value" id="stat-excused">0</strong>
+                        <span class="stat-foot">Excused absences today</span>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-top"><span class="stat-icon unmarked-stat-icon" aria-hidden="true">○</span><span class="stat-note">SCHOOL-WIDE</span></div>
+                        <p class="stat-label">Not yet marked</p>
+                        <strong class="stat-value" id="stat-unmarked">0</strong>
+                        <span class="stat-foot">Not confirmed present or absent</span>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-top"><span class="stat-icon rose" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></span><span class="stat-note">SCHOOL-WIDE</span></div>
+                        <p class="stat-label">Behavior notes</p>
+                        <strong class="stat-value" id="stat-behavior">0</strong>
+                        <span class="stat-foot">Notes recorded today</span>
+                    </article>
+                </section>
+                <section class="panel attendance-trends-panel" aria-labelledby="attendance-trends-title">
+                    <div class="panel-heading attendance-trends-heading">
+                        <div>
+                            <p class="eyebrow">ATTENDANCE REPORT</p>
+                            <h2 id="attendance-trends-title">Attendance trends</h2>
+                        </div>
+                        <div class="trend-controls">
+                            <label class="trend-period-field" for="trend-period">
+                                <span class="field-label">Period</span>
+                                <select id="trend-period">
+                                    <option value="7">Last 7 days</option>
+                                    <option value="30">Last 30 days</option>
+                                    <option value="custom">Custom range</option>
+                                </select>
+                            </label>
+                            <label class="trend-period-field" for="trend-start">
+                                <span class="field-label">From</span>
+                                <input id="trend-start" type="date">
+                            </label>
+                            <label class="trend-period-field" for="trend-end">
+                                <span class="field-label">To</span>
+                                <input id="trend-end" type="date">
+                            </label>
+                            <button class="button" id="export-trend-report" type="button">Export CSV</button>
+                            <button class="button" id="print-trend-report" type="button">Print report</button>
+                        </div>
+                    </div>
+                    <p class="trend-calculation-note">Rate = (present + late) ÷ (present + late + absent). Excused and unmarked records are excluded from the rate. Period totals count daily student records, not unique students.</p>
+                    <p class="form-error" id="trend-error" role="alert" hidden></p>
+                    <div class="trend-summary" id="trend-summary" aria-live="polite"></div>
+                    <div class="attendance-trend-chart" id="attendance-trend-chart" aria-label="Daily attendance trend"></div>
+                    <p class="empty-state" id="attendance-trend-empty">No attendance records are available in this period.</p>
+                </section>
+                <section class="panel attention-panel" aria-labelledby="attention-title">
+                    <div class="panel-heading"><div><p class="eyebrow">LAST 14 DAYS</p><h2 id="attention-title">Needs attention</h2></div><span class="class-chip">3+ absences or 2+ demerits</span></div>
+                    <ul class="attention-list" id="attention-list"></ul>
+                    <p class="empty-state" id="attention-empty">No students need follow-up right now.</p>
+                </section>
+                <section class="panel section-attendance-panel" aria-labelledby="section-attendance-title">
+                    <div class="panel-heading section-attendance-heading">
+                        <div>
+                            <p class="eyebrow">TODAY · <span id="section-attendance-date"></span></p>
+                            <h2 id="section-attendance-title">Daily attendance by section</h2>
+                        </div>
+                        <div class="section-attendance-controls">
+                            <span class="section-attendance-total" id="section-attendance-total"></span>
+                            <button class="section-attendance-toggle" id="section-attendance-toggle" type="button" aria-expanded="true" aria-controls="section-attendance-list">Close</button>
+                        </div>
+                    </div>
+                    <div class="section-attendance-list" id="section-attendance-list" aria-live="polite"></div>
+                    <div class="empty-sections-bar" id="empty-sections-bar" hidden>
+                        <span id="empty-sections-label"></span>
+                        <button class="text-button" id="empty-sections-toggle" type="button" aria-pressed="false">Show empty sections</button>
+                    </div>
+                </section>
+                <section class="overview-shortcuts" aria-label="Quick links">
+                    <a class="shortcut-card" href="#attendance"><span class="shortcut-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span><span><strong>Take attendance</strong><small>Mark who is present today</small></span><b aria-hidden="true">→</b></a>
+                    <a class="shortcut-card" href="#student-management"><span class="shortcut-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span><strong>Manage students</strong><small>Add students to a class roster</small></span><b aria-hidden="true">→</b></a>
+                    <a class="shortcut-card" href="#behavior"><span class="shortcut-icon rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></span><span><strong>Record behavior</strong><small>Write a merit note or record a demerit</small></span><b aria-hidden="true">→</b></a>
+                </section>
+                </section>
+
+                <section class="teacher-view" id="view-students" data-view="students" hidden>
+                <section class="panel management-panel" id="student-management">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="eyebrow">STEP 1 · CHOOSE A CLASS</p>
+                            <h2>Find your students</h2>
+                        </div>
+                        <button class="button class-attendance-button" id="class-attendance-link" type="button">Take this class’s attendance <span aria-hidden="true">→</span></button>
+                    </div>
+                    <p class="form-intro">Choose a grade first, then a section. The roster below will show only students who belong to that class.</p>
+                    <div class="roster-class-picker">
+                        <label class="class-picker-field" for="roster-grade">
+                            <span class="class-step">1</span>
+                            <span class="class-picker-copy"><strong>Grade level</strong><small>Choose a grade</small></span>
+                            <select id="roster-grade" required></select>
+                        </label>
+                        <span class="class-picker-arrow" aria-hidden="true">→</span>
+                        <label class="class-picker-field" for="roster-section">
+                            <span class="class-step">2</span>
+                            <span class="class-picker-copy"><strong>Section</strong><small id="roster-section-hint">Choose a section</small></span>
+                            <select id="roster-section" required></select>
+                        </label>
+                    </div>
+                    <div class="selected-class-banner">
+                        <span class="selected-class-icon" aria-hidden="true"><img id="roster-section-photo" alt="" hidden><span id="roster-section-icon">▦</span></span>
+                        <span><small>SELECTED CLASS</small><strong id="roster-class-title">Choose a grade and section</strong></span>
+                        <span class="selected-class-count" id="roster-class-count">0 students</span>
+                    </div>
+                    <p class="section-adviser-line" id="roster-section-adviser" hidden></p>
+                    <div class="roster-section-heading">
+                        <div><p class="eyebrow">STEP 2 · VIEW CLASS ROSTER</p><h3>Students in this section</h3></div>
+                        <span class="roster-instruction">Add a new student below or choose a student from this list.</span>
+                    </div>
+                    <form class="student-form" id="student-form">
+                        <div class="form-field student-name-field">
+                            <label class="field-label" for="new-student-name">Student name</label>
+                            <input id="new-student-name" type="text" maxlength="100" placeholder="Full name" required>
+                        </div>
+                        <div class="form-field student-number-field">
+                            <label class="field-label" for="new-student-id">Student LRN</label>
+                            <input id="new-student-id" type="text" inputmode="numeric" minlength="12" maxlength="12" pattern="[0-9]{12}" placeholder="12-digit LRN" required>
+                        </div>
+                        <div class="form-field student-photo-field">
+                            <label class="field-label" for="new-student-photo">Profile photo <span>(optional)</span></label>
+                            <input id="new-student-photo" type="file" accept="image/jpeg,image/png,image/webp">
+                        </div>
+                        <button class="button button-primary add-student-button" type="submit"><span aria-hidden="true">＋</span> Add student</button>
+                    </form>
+                    <section class="bulk-student-tools" id="bulk-student-tools" aria-labelledby="bulk-student-title">
+                        <div>
+                            <h3 id="bulk-student-title">Add students in bulk</h3>
+                            <p class="form-intro">Choose the class for this list, then paste one student per line in this format: Student Name-LRN. Example: Juan Dela Cruz-123456789012.</p>
+                        </div>
+                        <div class="bulk-class-picker">
+                            <label class="field-label" for="bulk-grade">Grade level<select id="bulk-grade" required></select></label>
+                            <label class="field-label" for="bulk-section">Section<select id="bulk-section" required disabled></select></label>
+                        </div>
+                        <label class="field-label" for="bulk-student-list">Student names and LRNs</label>
+                        <textarea id="bulk-student-list" rows="5" placeholder="Juan Dela Cruz-123456789012&#10;Maria Dela Cruz-123456789013"></textarea>
+                        <button class="button button-primary" id="bulk-add-students" type="button">Add pasted students</button>
+                        <p class="form-error" id="bulk-student-error" role="alert" hidden></p>
+                    </section>
+                    <div class="roster-removal-tools">
+                        <div>
+                            <strong>Remove students from the roster</strong>
+                            <span>Students are archived, so their records can be restored later.</span>
+                        </div>
+                        <label for="student-removal-scope" class="sr-only">Students to remove</label>
+                        <select id="student-removal-scope">
+                            <option value="section">Selected section</option>
+                            <option value="grade">Selected grade level</option>
+                            <option value="school">Whole school</option>
+                        </select>
+                        <button class="button roster-remove-button" id="remove-roster-students" type="button">Archive students</button>
+                    </div>
+                    <p class="empty-state" id="no-students-message">Choose a grade and section to see its student roster.</p>
+                    <p class="empty-state class-has-no-students" id="empty-class-roster" hidden>No students in this section yet. Add the first student using the form above.</p>
+                    <div class="student-profile-panel" id="student-profile-panel" hidden>
+                        <p class="print-only" id="print-heading"></p>
+                        <span class="student-profile-avatar" id="student-profile-avatar"></span>
+                        <div class="student-profile-main">
+                            <span class="eyebrow">SELECTED STUDENT</span>
+                            <strong id="student-profile-name"></strong>
+                            <small id="student-profile-class"></small>
+                        </div>
+                        <div class="student-profile-status">
+                            <small>ATTENDANCE TODAY</small>
+                            <strong id="student-profile-attendance">Not marked</strong>
+                        </div>
+                        <div class="student-profile-latest">
+                            <small>RECENT BEHAVIOR NOTE</small>
+                            <span id="student-profile-note">No behavior notes recorded.</span>
+                        </div>
+                        <p class="record-permanence" id="record-permanence"></p>
+                        <div class="student-profile-date-filters">
+                            <strong>Filter profile timeline</strong>
+                            <label for="student-profile-from">From<input id="student-profile-from" type="date"></label>
+                            <label for="student-profile-to">To<input id="student-profile-to" type="date"></label>
+                            <button class="button" id="clear-student-profile-dates" type="button">Clear dates</button>
+                        </div>
+                        <p class="form-error" id="student-profile-filter-error" role="alert" hidden></p>
+                        <section class="student-profile-history" aria-labelledby="student-attendance-history-title">
+                            <div class="student-history-heading">
+                                <div>
+                                    <span class="eyebrow">DAILY RECORD</span>
+                                    <h3 id="student-attendance-history-title">Attendance history</h3>
+                                </div>
+                                <span id="student-attendance-summary"></span>
+                            </div>
+                            <div class="student-attendance-calendar">
+                                <div class="student-calendar-heading">
+                                    <button class="button" id="student-calendar-previous" type="button" aria-label="Previous month">←</button>
+                                    <strong id="student-calendar-month"></strong>
+                                    <button class="button" id="student-calendar-next" type="button" aria-label="Next month">→</button>
+                                </div>
+                                <p class="student-calendar-help">Select a date to filter both profile timelines.</p>
+                                <div class="student-calendar-grid" id="student-attendance-calendar" role="group" aria-label="Monthly attendance calendar"></div>
+                            </div>
+                            <ul class="student-attendance-list" id="student-attendance-list" aria-live="polite"></ul>
+                            <p class="student-history-empty" id="student-attendance-empty" hidden>No attendance records yet. Mark this student present or absent to start their history.</p>
+                        </section>
+                        <section class="student-profile-history behavior-history" aria-labelledby="student-behavior-history-title">
+                            <div class="student-history-heading">
+                                <div>
+                                    <span class="eyebrow">STUDENT WELLBEING</span>
+                                    <h3 id="student-behavior-history-title">Behavior history</h3>
+                                </div>
+                                <span id="student-behavior-summary"></span>
+                            </div>
+                            <ul class="student-behavior-list" id="student-behavior-list" aria-live="polite"></ul>
+                            <p class="student-history-empty" id="student-behavior-empty" hidden>No behavior notes recorded for this student.</p>
+                        </section>
+                        <div class="student-profile-actions">
+                            <label class="button profile-photo-button" for="student-profile-photo">Change profile photo</label>
+                            <input id="student-profile-photo" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+                            <button class="button button-primary" id="student-profile-behavior" type="button">Record behavior</button>
+                            <button class="button" id="student-print" type="button">Print record</button>
+                            <button class="button" id="student-export" type="button">Download CSV</button>
+                        </div>
+                    </div>
+                    <div class="roster-wrap management-roster">
+                        <table class="roster-table">
+                            <thead><tr><th scope="col">STUDENT</th><th scope="col">TODAY’S ATTENDANCE</th><th scope="col">ACTION</th></tr></thead>
+                            <tbody id="management-rows"></tbody>
+                        </table>
+                    </div>
+                    <section class="archive-box section-archive-box" id="section-archive-box" aria-labelledby="archive-title" hidden>
+                        <div class="archive-box-header">
+                            <h3 id="archive-title">Archived students in this section</h3>
+                            <button class="button archive-delete-all" id="archive-delete-all" type="button">Remove archived from section</button>
+                        </div>
+                        <p class="form-intro">Only students previously assigned to this section are shown. Restore one to return the student and their records to the roster, or permanently delete the archived record.</p>
+                        <ul class="archive-list" id="archive-list"></ul>
+                        <p class="empty-state" id="archive-empty">No archived students in this section.</p>
+                    </section>
+                </section>
+                </section>
+
+                <section class="teacher-view" id="view-class-settings" data-view="class-settings" hidden>
+                <section class="panel management-panel" id="class-settings">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="eyebrow">SCHOOL ORGANIZATION</p>
+                            <h2>Customize grade levels &amp; sections</h2>
+                        </div>
+                    </div>
+                    <p class="form-intro">Sections belong to one grade only. Choose a grade, then add the sections that exist for that grade.</p>
+                    <div class="settings-grid">
+                        <form class="setup-form" id="grade-form">
+                            <label class="field-label" for="new-grade">Add grade level</label>
+                            <div class="inline-form"><input id="new-grade" type="text" maxlength="40" placeholder="e.g. Grade 7" required><button class="button button-primary" type="submit">Add</button></div>
+                            <div class="grade-setup-field">
+                                <label class="field-label" for="setup-grade">Choose grade to customize</label>
+                                <select id="setup-grade"></select>
+                            </div>
+                            <div class="tag-list grade-list" id="grade-list"></div>
+                        </form>
+                        <form class="setup-form" id="section-form">
+                            <label class="field-label" for="new-section">Add section to <strong id="section-grade-label">selected grade</strong></label>
+                            <div class="inline-form"><input id="new-section" type="text" maxlength="40" placeholder="e.g. Section A" required><button class="button button-primary" type="submit">Add section</button></div>
+                            <div class="tag-list" id="section-list"></div>
+                        </form>
+                        <form class="section-detail-form" id="section-detail-form">
+                            <h3>Section details</h3>
+                            <label class="field-label" for="section-detail-select">Choose a section to customize</label>
+                            <select id="section-detail-select"></select>
+                            <label class="field-label" for="section-adviser">Classroom adviser</label>
+                            <input id="section-adviser" type="text" maxlength="100" placeholder="Adviser name">
+                            <label class="field-label" for="section-photo">Section photo</label>
+                            <input id="section-photo" type="file" accept="image/jpeg,image/png,image/webp">
+                            <img class="section-photo-preview" id="section-photo-preview" alt="Section photo preview" hidden>
+                            <button class="button button-primary" type="submit">Save section details</button>
+                        </form>
+                    </div>
+                    <section class="calendar-box" aria-labelledby="calendar-title">
+                        <div>
+                            <p class="eyebrow">SCHOOL DATES</p>
+                            <h3 id="calendar-title">School calendar</h3>
+                            <p class="form-intro">Add holidays, closures, and school events. Calendar entries are shared with parent accounts in this browser.</p>
+                        </div>
+                        <form class="calendar-form" id="calendar-form">
+                            <label class="field-label" for="calendar-date">Date</label>
+                            <input id="calendar-date" type="date" required>
+                            <label class="field-label" for="calendar-title-input">Event</label>
+                            <input id="calendar-title-input" type="text" maxlength="100" placeholder="e.g. Midyear break" required>
+                            <label class="field-label" for="calendar-kind">Type</label>
+                            <select id="calendar-kind">
+                                <option value="event">School event</option>
+                                <option value="non-school-day">Holiday / non-school day</option>
+                            </select>
+                            <button class="button button-primary" type="submit">Add event</button>
+                        </form>
+                        <ul class="calendar-list" id="calendar-list"></ul>
+                        <p class="empty-state" id="calendar-empty">No school dates have been added.</p>
+                    </section>
+                    <div class="backup-tools">
+                        <div>
+                            <strong>Keep a copy of your roster</strong>
+                            <span>Download a backup before changing devices or clearing browser data.</span>
+                        </div>
+                        <div class="backup-actions">
+                            <button class="button backup-button" id="export-backup" type="button">Download backup</button>
+                            <label class="button backup-button restore-button" for="import-backup">Restore backup</label>
+                            <input id="import-backup" type="file" accept="application/json,.json" hidden>
+                        </div>
+                    </div>
+                </section>
+                </section>
+
+                <section class="teacher-view" id="view-attendance" data-view="attendance" hidden>
+                <section class="content-grid attendance-view-grid">
+                    <article class="panel attendance-panel" id="attendance">
+                        <div class="panel-heading">
+                            <div>
+                                <p class="eyebrow">DAILY CLASS REGISTER</p>
+                                <h2>Student attendance</h2>
+                            </div>
+                            <span class="class-chip" id="selected-class-label">All grades · all sections</span>
+                        </div>
+                        <div class="attendance-toolbar">
+                            <label class="search-box">
+                                <span aria-hidden="true">⌕</span>
+                                <input id="student-search" type="search" placeholder="Search students..." aria-label="Search students">
+                            </label>
+                            <label class="select-wrap class-filter-wrap">
+                                <span class="sr-only">Filter attendance by class</span>
+                                <select id="class-filter"><option value="all">All grades &amp; sections</option></select>
+                            </label>
+                            <label class="select-wrap">
+                                <span class="sr-only">Filter students by attendance</span>
+                                <select id="attendance-filter">
+                                    <option value="all">All students</option>
+                                    <option value="unmarked">Not marked</option>
+                                    <option value="present">Present</option>
+                                    <option value="absent">Absent</option>
+                                    <option value="late">Late</option>
+                                    <option value="excused">Excused</option>
+                                </select>
+                            </label>
+                        </div>
+                        <p class="attendance-closure-warning" id="attendance-closure-warning" role="status" hidden></p>
+                        <div class="roster-summary">
+                            <span><i class="legend-dot present-dot"></i><strong id="present-count">0</strong> present</span>
+                            <span><i class="legend-dot absent-dot"></i><strong id="absent-count">0</strong> absent</span>
+                            <span><i class="legend-dot late-dot"></i><strong id="late-count">0</strong> late</span>
+                            <span><i class="legend-dot excused-dot"></i><strong id="excused-count">0</strong> excused</span>
+                            <span><i class="legend-dot unmarked-dot"></i><strong id="unmarked-count">0</strong> not marked</span>
+                            <button class="text-button" id="mark-all-present" type="button">Mark unmarked as present</button>
+                            <button class="text-button" id="export-attendance" type="button">Export CSV</button>
+                            <button class="text-button" id="reset-attendance" type="button">Reset today</button>
+                        </div>
+                        <div class="roster-wrap">
+                            <table class="roster-table">
+                                <thead>
+                                    <tr><th scope="col">STUDENT</th><th scope="col">GRADE · SECTION</th><th scope="col">ATTENDANCE</th><th scope="col">MARK STATUS</th></tr>
+                                </thead>
+                                <tbody id="student-rows"></tbody>
+                            </table>
+                            <p class="empty-state" id="empty-roster" hidden>No students match your search or filter.</p>
+                        </div>
+                        <div class="panel-foot"><span>Attendance saves on this device as you mark students.</span><span id="save-indicator">Ready</span></div>
+                    </article>
+
+                </section>
+                </section>
+
+                <section class="teacher-view" id="view-behavior" data-view="behavior" hidden>
+                    <article class="panel behavior-panel behavior-view-panel" id="behavior">
+                        <div class="panel-heading">
+                            <div>
+                                <p class="eyebrow">STUDENT WELLBEING</p>
+                                <h2>Record a behavior note</h2>
+                            </div>
+                            <span class="panel-icon" aria-hidden="true">✎</span>
+                        </div>
+                        <p class="form-intro">Recognize a merit or record a demerit so your team can support the student.</p>
+                        <form id="behavior-form">
+                            <label class="field-label" for="behavior-student">Student</label>
+                            <select id="behavior-student" required>
+                                <option value="">Choose a student</option>
+                            </select>
+
+                            <fieldset class="behavior-type-field">
+                                <legend class="field-label">Type of note</legend>
+                                <div class="type-options">
+                                    <label class="type-option positive-option">
+                                        <input type="radio" name="behavior-type" value="merit" checked>
+                                        <span aria-hidden="true">＋</span> Merit
+                                    </label>
+                                    <label class="type-option concern-option">
+                                        <input type="radio" name="behavior-type" value="demerit">
+                                        <span aria-hidden="true">!</span> Demerit
+                                    </label>
+                                </div>
+                            </fieldset>
+
+                            <label class="field-label" for="behavior-category">Category</label>
+                            <select id="behavior-category" required>
+                                <option value="Participation">Participation</option>
+                                <option value="Kindness">Kindness</option>
+                                <option value="Effort">Effort</option>
+                                <option value="Classroom behavior">Classroom behavior</option>
+                                <option value="Safety">Safety</option>
+                                <option value="Other">Other</option>
+                            </select>
+
+                            <label class="field-label" for="behavior-note">What happened?</label>
+                            <textarea id="behavior-note" rows="3" maxlength="300" placeholder="Write a brief, factual note..." required></textarea>
+                            <div class="form-hint"><span>Keep notes respectful and focused on observable behavior.</span><span id="character-count">0/300</span></div>
+                            <button class="button button-primary submit-button" type="submit"><span aria-hidden="true">＋</span> Save behavior note</button>
+                            <p class="form-error" id="form-error" role="alert" hidden></p>
+                        </form>
+                    </article>
+                </section>
+
+                <section class="teacher-view" id="view-activity" data-view="activity" hidden>
+                <section class="panel activity-panel" id="activity">
+                    <div class="panel-heading activity-heading">
+                        <div>
+                            <p class="eyebrow">CLASSROOM UPDATES</p>
+                            <h2>Recent behavior notes</h2>
+                        </div>
+                        <label class="select-wrap activity-filter-wrap">
+                            <span class="sr-only">Filter behavior notes</span>
+                            <select id="behavior-filter">
+                                <option value="all">All notes</option>
+                                <option value="merit">Merit</option>
+                                <option value="demerit">Demerit</option>
+                                <option id="behavior-filter-archived" value="archived" hidden>Archived notes</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="activity-list" id="activity-list"></div>
+                    <p class="empty-activity" id="empty-activity">No behavior notes yet. Add a note above to get started.</p>
+                    <div class="activity-foot"><span>New notes appear here immediately and are saved on this device.</span><span class="confidential-tag">🔒 Teacher records</span></div>
+                </section>
+                </section>
+
+                <section class="teacher-view" id="view-settings" data-view="settings" hidden>
+                    <section class="settings-page-intro">
+                        <p class="eyebrow">MAKE STUDENTTRACK YOURS</p>
+                        <h1>Settings</h1>
+                        <p>Adjust how the portal looks and feels on this device.</p>
+                    </section>
+                    <section class="settings-layout" id="app-settings">
+                        <h2 class="settings-group-title">Appearance and accessibility</h2>
+                        <article class="panel preference-card theme-card">
+                            <div class="preference-heading">
+                                <span class="preference-icon appearance-icon" aria-hidden="true">◐</span>
+                                <div><p class="eyebrow">APPEARANCE</p><h3>Choose your theme</h3><p>Pick the look that feels comfortable. Your choice is saved on this device.</p></div>
+                            </div>
+                            <div class="theme-options" role="group" aria-label="Color theme">
+                                <button class="theme-option" type="button" data-theme-choice="light" aria-pressed="true"><span class="theme-preview light-preview" aria-hidden="true"><i></i><i></i><i></i></span><span><strong>Light</strong><small>Bright and clear</small></span><span class="theme-check" aria-hidden="true">✓</span></button>
+                                <button class="theme-option" type="button" data-theme-choice="dark" aria-pressed="false"><span class="theme-preview dark-preview" aria-hidden="true"><i></i><i></i><i></i></span><span><strong>Dark</strong><small>Easy on the eyes</small></span><span class="theme-check" aria-hidden="true">✓</span></button>
+                                <button class="theme-option" type="button" data-theme-choice="system" aria-pressed="false"><span class="theme-preview system-preview" aria-hidden="true"><i></i><i></i><i></i></span><span><strong>System</strong><small>Follow device setting</small></span><span class="theme-check" aria-hidden="true">✓</span></button>
+                            </div>
+                        </article>
+                        <article class="panel preference-card">
+                            <div class="preference-heading">
+                                <span class="preference-icon motion-icon" aria-hidden="true">✳</span>
+                                <div><p class="eyebrow">ACCESSIBILITY</p><h3>Make it easier to read</h3><p>These settings apply to every page and are saved on this device.</p></div>
+                            </div>
+                            <div class="pref-row">
+                                <span><strong id="size-label">Display size</strong><small>Scales text and controls across the portal.</small></span>
+                                <div class="seg" role="group" aria-labelledby="size-label">
+                                    <button type="button" data-text-size="md" aria-pressed="true">Default</button>
+                                    <button type="button" data-text-size="lg" aria-pressed="false">Large</button>
+                                    <button type="button" data-text-size="xl" aria-pressed="false">Extra large</button>
+                                </div>
+                            </div>
+                            <label class="setting-switch-row" for="pref-contrast"><span><strong>High contrast</strong><small>Stronger borders and darker text for low vision.</small></span><input id="pref-contrast" type="checkbox" role="switch"><span class="switch-track" aria-hidden="true"><i></i></span></label>
+                            <label class="setting-switch-row" for="pref-font"><span><strong>Easy-to-read font</strong><small>Switch to Atkinson Hyperlegible, designed for readability.</small></span><input id="pref-font" type="checkbox" role="switch"><span class="switch-track" aria-hidden="true"><i></i></span></label>
+                            <label class="setting-switch-row" for="reduce-motion-setting"><span><strong>Reduce motion</strong><small>Minimize page transitions and animated effects.</small></span><input id="reduce-motion-setting" type="checkbox" role="switch"><span class="switch-track" aria-hidden="true"><i></i></span></label>
+                            <p class="settings-note">StudentTrack also respects the reduced-motion preference set on your device.</p>
+                            <button class="button settings-signout-button" id="reset-prefs" type="button">Reset display settings</button>
+                        </article>
+                        <article class="panel preference-card">
+                            <div class="preference-heading">
+                                <span class="preference-icon account-icon" aria-hidden="true">⌨</span>
+                                <div><p class="eyebrow">KEYBOARD</p><h3>Shortcuts</h3><p>Everything is also reachable with Tab and Enter.</p></div>
+                            </div>
+                            <dl class="shortcut-list">
+                                <div><dt><kbd>Ctrl</kbd> <kbd>K</kbd></dt><dd>Find a student</dd></div>
+                                <div><dt><kbd>Alt</kbd> <kbd>1</kbd></dt><dd>Overview</dd></div>
+                                <div><dt><kbd>Alt</kbd> <kbd>2</kbd></dt><dd>Attendance</dd></div>
+                                <div><dt><kbd>Alt</kbd> <kbd>3</kbd></dt><dd>Students</dd></div>
+                                <div><dt><kbd>Alt</kbd> <kbd>4</kbd></dt><dd>Behavior log</dd></div>
+                                <div><dt><kbd>Alt</kbd> <kbd>5</kbd></dt><dd>Settings</dd></div>
+                            </dl>
+                        </article>
+                        <h2 class="settings-group-title">Preferences</h2>
+                        <article class="panel preference-card">
+                            <div class="preference-heading">
+                                <span class="preference-icon appearance-icon" aria-hidden="true">⌂</span>
+                                <div><p class="eyebrow">START PAGE</p><h3>Where do you begin?</h3><p>Choose the page that opens after you sign in.</p></div>
+                            </div>
+                            <label class="field-label pref-label" for="pref-start">Open this page after sign in</label>
+                            <div class="select-wrap"><select id="pref-start"><option value="overview">Overview</option><option value="attendance">Attendance</option><option value="students">Students</option><option value="behavior">Behavior log</option></select></div>
+                        </article>
+                        <h2 class="settings-group-title">Data and records</h2>
+                        <article class="panel preference-card data-settings-card">
+                            <div class="preference-heading">
+                                <span class="preference-icon data-icon" aria-hidden="true">▤</span>
+                                <div><p class="eyebrow">DATA &amp; PRIVACY</p><h3>Permanent records</h3><p>Attendance and behavior entries are dated and signed. Teachers and administrators can move behavior notes to Archived notes and restore them later; removal does not permanently delete a note. Everything stays in this browser, so download a backup before clearing browser data.</p></div>
+                            </div>
+                            <div class="settings-actions">
+                                <button class="button" id="export-attendance-csv" type="button">Export attendance (CSV)</button>
+                                <button class="button" id="export-behavior-csv" type="button">Export behavior notes (CSV)</button>
+                                <button class="button" id="export-audit-csv" type="button">Export audit log (CSV)</button>
+                                <a class="button data-settings-link" href="#class-settings">Backups and class setup <span aria-hidden="true">→</span></a>
+                            </div>
+                        </article>
+                        <h2 class="settings-group-title">Account</h2>
+                        <article class="panel preference-card account-settings-card">
+                            <div class="preference-heading">
+                                <span class="preference-icon account-icon" aria-hidden="true">♙</span>
+                                <div><p class="eyebrow">ACCOUNT</p><h3>Signed-in account</h3><p>Account details for this browser session.</p></div>
+                            </div>
+                            <dl class="account-details">
+                                <div><dt>Name</dt><dd id="settings-account-name">Teacher</dd></div>
+                                <div><dt>Email</dt><dd id="settings-account-email">—</dd></div>
+                                <div><dt>Portal role</dt><dd id="settings-account-role">Teacher</dd></div>
+                            </dl>
+                            <p class="settings-note">Authenticator codes protect server-backed sign-in. Student records and parent-child links remain local to this browser.</p>
+                            <button class="button settings-signout-button" id="settings-2fa" type="button">Set up 2FA</button>
+                            <label class="field-label teacher-photo-setting" for="teacher-profile-photo">Teacher profile photo</label>
+                            <input class="teacher-photo-setting" id="teacher-profile-photo" type="file" accept="image/jpeg,image/png,image/webp">
+                            <button class="button settings-signout-button" id="settings-sign-out" type="button">Sign out</button>
+                        </article>
+                    </section>
+                </section>
+
+                <footer class="page-footer">
+                    <span>StudentTrack · Partida National High School</span>
+                    <span>Prototype · Sample roster only · Updates stay in this browser</span>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <!-- Parent portal -->
+    <main class="parent-portal" id="parent-portal" hidden>
+        <header class="parent-topbar">
+            <a class="brand" href="#" aria-label="StudentTrack parent portal">
+                <img class="brand-mark brand-logo" src="assets/seal.webp" alt="">
+                <span><strong>StudentTrack</strong><small>PARENT PORTAL · PARTIDA NHS</small></span>
+            </a>
+            <div class="parent-account">
+                <span class="user-avatar" id="parent-avatar">PA</span>
+                <span id="parent-account-name">Parent</span>
+                <button class="top-sign-out parent-notification-button" id="parent-notifications-enable" type="button">Enable alerts</button>
+                <button class="top-sign-out" id="parent-sign-out" type="button">Sign out</button>
+            </div>
+        </header>
+        <div class="parent-content">
+            <nav class="parent-nav" aria-label="Parent portal sections">
+                <button class="parent-nav-button" id="parent-overview-tab" type="button" aria-pressed="true">Overview</button>
+                <button class="parent-nav-button" id="parent-settings-tab" type="button" aria-pressed="false">Settings</button>
+            </nav>
+            <section class="parent-view" id="parent-overview-view">
+                <section class="parent-welcome">
+                    <p class="eyebrow">FAMILY DASHBOARD</p>
+                    <h1>Welcome, <span id="parent-greeting-name">Parent</span></h1>
+                    <p>View attendance and school updates for the children linked to your account.</p>
+                </section>
+                <section class="panel parent-children-panel">
+                    <div class="panel-heading">
+                        <div><p class="eyebrow">YOUR FAMILY</p><h2>My children</h2></div>
+                        <span class="class-chip">Private to your account</span>
+                    </div>
+                    <p class="form-intro">Add any linked child below using their 12-digit LRN. Once linked, the child’s attendance and updates appear immediately in this parent view.</p>
+                    <form class="parent-link-form" id="parent-link-form">
+                        <label class="field-label" for="parent-add-child">Link a child using their LRN</label>
+                        <div class="inline-form">
+                            <input id="parent-add-child" type="text" inputmode="numeric" minlength="12" maxlength="12" pattern="[0-9]{12}" placeholder="Enter 12-digit LRN" required>
+                            <button class="button button-primary" type="submit">Link child</button>
+                        </div>
+                    </form>
+                    <fieldset class="parent-notification-preferences">
+                        <legend>Notification preferences</legend>
+                        <label><input id="pref-parent-attendance" type="checkbox" checked> Attendance updates</label>
+                        <label><input id="pref-parent-behavior" type="checkbox" checked> Behavior updates</label>
+                        <label><input id="pref-parent-calendar" type="checkbox" checked> School calendar updates</label>
+                    </fieldset>
+                    <div class="parent-child-list" id="parent-child-list"></div>
+                    <p class="empty-state" id="parent-no-children" hidden>No children are linked yet. Add a child’s LRN above to view their records.</p>
+                    <p class="parent-prototype-note" id="parent-link-pending" hidden>Parent-child links are approved immediately when the LRN matches a student record.</p>
+                </section>
+                <section class="parent-updates-section">
+                    <div class="parent-updates-heading">
+                        <div><p class="eyebrow">ATTENDANCE &amp; SCHOOL MESSAGES</p><h2>Updates for your children</h2></div>
+                        <span class="update-counter" id="parent-update-count">0 updates</span>
+                    </div>
+                    <div class="parent-updates-list" id="parent-updates-list"></div>
+                    <p class="empty-state parent-empty-updates" id="parent-no-updates">There are no updates for your linked children yet.</p>
+                </section>
+                <p class="parent-prototype-note">This version stores records in this browser only. Updates can sync between open tabs on the same browser, but are not delivered to other devices. School verification, secure accounts, and push delivery require the configured school backend.</p>
+            </section>
+            <section class="parent-view parent-settings-view" id="parent-settings-view" aria-labelledby="parent-settings-title" hidden>
+                <header class="parent-settings-heading">
+                    <p class="eyebrow">PARENT ACCOUNT</p>
+                    <h1 id="parent-settings-title">Settings</h1>
+                    <p>Manage the security of your parent account.</p>
+                </header>
+                <section class="panel parent-security-panel" aria-labelledby="parent-security-title">
+                    <div class="panel-heading">
+                        <div><p class="eyebrow">ACCOUNT SECURITY</p><h2 id="parent-security-title">Two-factor authentication</h2></div>
+                    </div>
+                    <p class="form-intro">Protect your parent account at sign-in with a code from an authenticator app.</p>
+                    <button class="button button-primary" id="parent-settings-2fa" type="button">Set up 2FA</button>
+                </section>
+            </section>
+        </div>
+    </main>
+    <dialog class="totp-dialog" id="totp-dialog" aria-labelledby="totp-title">
+        <div class="totp-dialog-card">
+            <h2 id="totp-title">Set up Google Authenticator</h2>
+            <p id="totp-instructions">Confirm your password to start setup.</p>
+            <label class="field-label" id="totp-password-label" for="totp-password-input">Current account password</label>
+            <input id="totp-password-input" type="password" autocomplete="current-password">
+            <img id="totp-qr" alt="Authenticator setup QR code" hidden>
+            <label class="field-label" id="totp-code-label" for="totp-code-input" hidden>6-digit code</label>
+            <input id="totp-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" hidden>
+            <p class="totp-error" id="totp-error" role="alert" hidden></p>
+            <section class="recovery-code-panel" id="recovery-code-panel" hidden>
+                <h3>Save your recovery codes</h3>
+                <p>Each code works once. Keep these somewhere private; they will not be shown again.</p>
+                <ul id="recovery-code-list"></ul>
+            </section>
+            <div class="totp-dialog-actions">
+                <button class="button" id="totp-cancel-btn" type="button">Cancel</button>
+                <button class="button button-primary" id="totp-start-btn" type="button">Continue</button>
+                <button class="button button-primary" id="totp-verify-btn" type="button" hidden>Verify and enable</button>
+                <button class="button button-primary" id="totp-done-btn" type="button" hidden>I've saved the codes</button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Dialogs and overlays -->
+    <dialog class="find-dialog" id="find-dialog" aria-labelledby="find-title">
+        <form method="dialog" class="find-head">
+            <h2 id="find-title" class="sr-only">Find a student</h2>
+            <label class="sr-only" for="find-input">Student name or LRN</label>
+            <input id="find-input" type="search" autocomplete="off" placeholder="Search by name or LRN">
+            <button class="find-close" type="submit" aria-label="Close search">Esc</button>
+        </form>
+        <p class="sr-only" id="find-status" role="status" aria-live="polite"></p>
+        <ul class="find-results" id="find-results"></ul>
+        <p class="empty-state" id="find-empty" hidden>No students match that search.</p>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
