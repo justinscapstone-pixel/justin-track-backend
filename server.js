@@ -10,12 +10,26 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(__dirname));
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-});
+const pool = new Pool(
+    process.env.DATABASE_URL
+        ? { connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } }
+        : { user: 'postgres', host: 'localhost', database: 'pnhs_db', password: 'JustinAdriel', port: 5432 }
+);
 
-// Track active logged-in user on this local server
+// Automatically create the users table on startup
+pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(150) UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        role VARCHAR(20) NOT NULL,
+        totp_secret TEXT,
+        is_2fa_enabled BOOLEAN DEFAULT FALSE
+    );
+`).then(() => console.log('Users table ready!'))
+  .catch(err => console.error('DB INIT ERROR:', err.message));
+
 let activeUserEmail = null;
 
 function generateRecoveryCodes() {
@@ -24,7 +38,7 @@ function generateRecoveryCodes() {
     );
 }
 
-// 1. Check Session (Called when page reloads)
+// 1. Check Session
 app.get('/api/session', async (req, res) => {
     try {
         if (!activeUserEmail) {
@@ -38,7 +52,7 @@ app.get('/api/session', async (req, res) => {
             activeUserEmail = null;
             return res.json({ authenticated: false });
         }
-        const user = result.rows[0];
+        const user = result.rows;
         res.json({
             authenticated: true,
             user: {
@@ -54,7 +68,7 @@ app.get('/api/session', async (req, res) => {
     }
 });
 
-// 2. Register New Account
+// 2. Register
 app.post('/api/register', async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
@@ -62,7 +76,7 @@ app.post('/api/register', async (req, res) => {
             'INSERT INTO users (name, email, password, role) VALUES ($1, LOWER($2), $3, LOWER($4)) RETURNING name, email, role, is_2fa_enabled',
             [name, email, password, role]
         );
-        const user = result.rows[0];
+        const user = result.rows;
         activeUserEmail = user.email;
         res.json({
             user: {
@@ -78,7 +92,7 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// 3. Login (Handles Password + 2FA Code on Every Sign-In)
+// 3. Login + 2FA Check
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password, role, token } = req.body;
@@ -90,9 +104,8 @@ app.post('/api/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid email, password, or portal role.' });
         }
 
-        const user = result.rows[0];
+        const user = result.rows;
 
-        // If 2FA is enabled on this account, require 6-digit code
         if (user.is_2fa_enabled) {
             if (!token) {
                 return res.json({ requires2fa: true });
@@ -129,7 +142,7 @@ app.post('/api/logout', (req, res) => {
     res.json({ success: true });
 });
 
-// 5. Start 2FA Setup (Verifies Password & Returns QR Code)
+// 5. Setup 2FA (Generate QR Code)
 app.post('/api/2fa/setup', async (req, res) => {
     try {
         const { password } = req.body;
@@ -141,68 +154,4 @@ app.post('/api/2fa/setup', async (req, res) => {
             'SELECT password FROM users WHERE LOWER(email) = LOWER($1)',
             [activeUserEmail]
         );
-        if (userCheck.rows.length === 0 || userCheck.rows[0].password !== password) {
-            return res.status(401).json({ message: 'Incorrect current password.' });
-        }
-
-        const secret = speakeasy.generateSecret({
-            name: `StudentTrack (${activeUserEmail})`,
-            issuer: 'StudentTrack'
-        });
-
-        await pool.query(
-            'UPDATE users SET totp_secret = $1 WHERE LOWER(email) = LOWER($2)',
-            [secret.base32, activeUserEmail]
-        );
-
-        const qrCode = await QRCode.toDataURL(secret.otpauth_url);
-        res.json({ qrCode });
-    } catch (err) {
-        console.error('2FA SETUP ERROR:', err.message);
-        res.status(500).json({ message: err.message });
-    }
-});
-
-// 6. Verify 6-Digit Code & Enable 2FA
-app.post('/api/2fa/verify', async (req, res) => {
-    try {
-        const { token } = req.body;
-        if (!activeUserEmail) {
-            return res.status(401).json({ message: 'Not signed in.' });
-        }
-
-        const result = await pool.query(
-            'SELECT totp_secret FROM users WHERE LOWER(email) = LOWER($1)',
-            [activeUserEmail]
-        );
-        if (result.rows.length === 0 || !result.rows[0].totp_secret) {
-            return res.status(404).json({ message: '2FA setup was not started.' });
-        }
-
-        const verified = speakeasy.totp.verify({
-            secret: result.rows[0].totp_secret,
-            encoding: 'base32',
-            token: String(token).trim(),
-            window: 1
-        });
-
-        if (!verified) {
-            return res.status(400).json({ message: 'Invalid 6-digit code. Try again.' });
-        }
-
-        await pool.query(
-            'UPDATE users SET is_2fa_enabled = TRUE WHERE LOWER(email) = LOWER($1)',
-            [activeUserEmail]
-        );
-
-        res.json({
-            verified: true,
-            recoveryCodes: generateRecoveryCodes()
-        });
-    } catch (err) {
-        console.error('2FA VERIFY ERROR:', err.message);
-        res.status(500).json({ message: err.message });
-    }
-});
-
-app.listen(3000, () => console.log('Server running at http://localhost:3000'));
+        if (userCheck.rows.length === 0 || userCheck.rows.password
