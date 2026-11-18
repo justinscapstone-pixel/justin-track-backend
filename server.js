@@ -52,7 +52,7 @@ app.get('/api/session', async (req, res) => {
             activeUserEmail = null;
             return res.json({ authenticated: false });
         }
-        const user = result.rows;
+        const user = result.rows[0];
         res.json({
             authenticated: true,
             user: {
@@ -76,7 +76,7 @@ app.post('/api/register', async (req, res) => {
             'INSERT INTO users (name, email, password, role) VALUES ($1, LOWER($2), $3, LOWER($4)) RETURNING name, email, role, is_2fa_enabled',
             [name, email, password, role]
         );
-        const user = result.rows;
+        const user = result.rows[0];
         activeUserEmail = user.email;
         res.json({
             user: {
@@ -104,7 +104,7 @@ app.post('/api/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid email, password, or portal role.' });
         }
 
-        const user = result.rows;
+        const user = result.rows[0];
 
         if (user.is_2fa_enabled) {
             if (!token) {
@@ -154,7 +154,7 @@ app.post('/api/2fa/setup', async (req, res) => {
             'SELECT password FROM users WHERE LOWER(email) = LOWER($1)',
             [activeUserEmail]
         );
-        if (userCheck.rows.length === 0 || userCheck.rows.password !== password) {
+        if (userCheck.rows.length === 0 || userCheck.rows[0].password !== password) {
             return res.status(401).json({ message: 'Incorrect current password.' });
         }
 
@@ -188,12 +188,12 @@ app.post('/api/2fa/verify', async (req, res) => {
             'SELECT totp_secret FROM users WHERE LOWER(email) = LOWER($1)',
             [activeUserEmail]
         );
-        if (result.rows.length === 0 || !result.rows.totp_secret) {
+        if (result.rows.length === 0 || !result.rows[0].totp_secret) {
             return res.status(404).json({ message: '2FA setup was not started.' });
         }
 
         const verified = speakeasy.totp.verify({
-            secret: result.rows.totp_secret,
+            secret: result.rows[0].totp_secret,
             encoding: 'base32',
             token: String(token).trim(),
             window: 1
