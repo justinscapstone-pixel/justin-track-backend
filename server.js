@@ -154,4 +154,4 @@ app.post('/api/2fa/setup', async (req, res) => {
             'SELECT password FROM users WHERE LOWER(email) = LOWER($1)',
             [activeUserEmail]
         );
-        if (userCheck.rows.length === 0 || userCheck.rows.password
+        if (userCheck.rows.length === 0 || userCheck.rows.passwo
