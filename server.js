@@ -154,4 +154,69 @@ app.post('/api/2fa/setup', async (req, res) => {
             'SELECT password FROM users WHERE LOWER(email) = LOWER($1)',
             [activeUserEmail]
         );
-        if (userCheck.rows.length === 0 || userCheck.rows.passwo
+        if (userCheck.rows.length === 0 || userCheck.rows.password !== password) {
+            return res.status(401).json({ message: 'Incorrect current password.' });
+        }
+
+        const secret = speakeasy.generateSecret({
+            name: `StudentTrack (${activeUserEmail})`,
+            issuer: 'StudentTrack'
+        });
+
+        await pool.query(
+            'UPDATE users SET totp_secret = $1 WHERE LOWER(email) = LOWER($2)',
+            [secret.base32, activeUserEmail]
+        );
+
+        const qrCode = await QRCode.toDataURL(secret.otpauth_url);
+        res.json({ qrCode });
+    } catch (err) {
+        console.error('2FA SETUP ERROR:', err.message);
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// 6. Verify 6-Digit Code & Enable 2FA
+app.post('/api/2fa/verify', async (req, res) => {
+    try {
+        const { token } = req.body;
+        if (!activeUserEmail) {
+            return res.status(401).json({ message: 'Not signed in.' });
+        }
+
+        const result = await pool.query(
+            'SELECT totp_secret FROM users WHERE LOWER(email) = LOWER($1)',
+            [activeUserEmail]
+        );
+        if (result.rows.length === 0 || !result.rows.totp_secret) {
+            return res.status(404).json({ message: '2FA setup was not started.' });
+        }
+
+        const verified = speakeasy.totp.verify({
+            secret: result.rows.totp_secret,
+            encoding: 'base32',
+            token: String(token).trim(),
+            window: 1
+        });
+
+        if (!verified) {
+            return res.status(400).json({ message: 'Invalid 6-digit code. Try again.' });
+        }
+
+        await pool.query(
+            'UPDATE users SET is_2fa_enabled = TRUE WHERE LOWER(email) = LOWER($1)',
+            [activeUserEmail]
+        );
+
+        res.json({
+            verified: true,
+            recoveryCodes: generateRecoveryCodes()
+        });
+    } catch (err) {
+        console.error('2FA VERIFY ERROR:', err.message);
+        res.status(500).json({ message: err.message });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
